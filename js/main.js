@@ -1,92 +1,127 @@
-'use strict';
+"use strict";
 
-function main(){
+let game; // instance of the Game
+let splashScreen; // Start Game Screen
+let gameScreen;
+let gameOverScreen;
 
-  var gameAudio = new Audio('./sounds/game.mp3');
-  var gameOverAudio = new Audio('./sounds/gameover.mp3');
-  
-  //===========CREATE SCREENS============================================================
-
-  const mainElement = document.querySelector('main');
-
-  function buildDom(html){
-    mainElement.innerHTML = html;
-    return mainElement;
-  }
-   //===========SPLASH SCREEN
-
-  function buildSplashScreen(){
-    buildDom(`
-
-    <section class="game-container">
-    <article class="logo-splash">
-
-      <img src="./img/sf-logo.png">
-      <img src="./img/splash-bright.png" class="img-bright">
-      <button>PLAY NOW!</button>
-      <p>Use the arrows ( 🡄 🡆 ) to move the character, when you are ready click and drag ( ⇚ ➚ ) to set the power and direction of the shot, be careful, don't hit yourself !</p>
-    </article>
-    </section>
-    `)
-
-    const buttonStart = document.querySelector('button');
-    buttonStart.addEventListener('click',buildGameScreen);
-
-  }
-
-  //===========GAME SCREEN
-
-  function buildGameScreen(){
-    gameAudio.play();
-    gameAudio.addEventListener('ended', function() {
-      this.currentTime = 0;
-      this.play();
-  }, false);
-
-    buildDom(`
-    <section class="game-container">
-     <canvas></canvas>
-    </section>
-    `)
-
-  //start game----------
-
-    const containerElement = document.querySelector('.game-container');
-    const gameWidth = containerElement.offsetWidth;
-    const gameHeight = containerElement.offsetHeight;
-    
-    const canvasElement = document.querySelector('canvas');
-
-    canvasElement.setAttribute('width',gameWidth);
-    canvasElement.setAttribute('height',gameHeight);
-
-    const game = new Game(canvasElement);
-    game.start();
-    game.startLoop();
-    game.setGameOverCallBack(buildGameOverScreen);
-
-  }
-  //===========GAMEOVER SCREEN
-  function buildGameOverScreen(){
-
-    gameAudio.pause();
-    gameAudio.currentTime = 0;
-    gameOverAudio.play();
-    buildDom(`
-    <section class="game-container">
-    <article class="logo-splash">
-
-      <img src="" class="player-winner">
-      <img src="./img/splash-bright.png" class="img-bright">
-      <button>PLAY AGAIN</button>
-      <p>"What a loser... try again!"</p>
-    </article>
-    </section>
-    `)
-    const buttonStart = document.querySelector('button');
-    buttonStart.addEventListener('click',buildGameScreen)
-  }
-  buildSplashScreen();
+// Creates DOM elements from a string representation
+// buildDom
+function buildDom(htmlString) {
+  const div = document.createElement("div");
+  div.innerHTML = htmlString;
+  return div.children[0];
 }
 
-window.addEventListener('load',main);
+// -- splash screen
+
+function createSplashScreen() {
+  splashScreen = buildDom(`
+  <main class="splashScreen">
+      <h1>Dungeon Survival</h1>
+      <div class="splashContent">
+        <img src="../img/wizard.png" alt="Wizard">
+        <div>
+          <p>Oh, hello there and welcome to this dungeon! <br>
+            In case you don't know already, let me explain you what is all this about.
+            This is a Dungeon that never ends and you need to <br> survive as many rounds
+            as possible inside of it. During each round, new monsters will show up and
+            you will have to defeat them all. <br>
+            Sorry, I forgot to ask, what's your name?
+          </p>
+          <div>
+            <input type="text" id="name">
+            <button>Tell the wizard</button>
+          </div>
+        </div>
+      </div>    
+  </main>
+	`);
+
+  document.body.appendChild(splashScreen);
+
+  const startButton = splashScreen.querySelector("button");
+  startButton.addEventListener("click", startGame);
+}
+
+function removeSplashScreen() {
+  // remove() is the DOM method that removes the Node from the page
+  splashScreen.remove();
+}
+
+// -- game screen
+
+function createGameScreen() {
+  gameScreen = buildDom(`
+    <main class="game-container">
+      <header>
+        <div class="lives">
+          <span class="label">Lives:</span>
+          <span class="value"></span>
+        </div>
+
+        <div class="score">
+          <span class="label">Score:</span>
+          <span class="value"></span>
+        </div>
+      </header>
+
+      <div class="canvas-container">
+        <canvas></canvas>
+      </div>
+    </main>
+	`);
+
+  document.body.appendChild(gameScreen);
+  return gameScreen;
+}
+
+function removeGameScreen() {
+  gameScreen.remove();
+}
+
+// -- game over screen
+
+function createGameOverScreen(score) {
+  gameOverScreen = buildDom(`
+  <main>
+    <h1>Game over</h1>
+    <p>Your score: <span> ${score} </span></p>
+    <button>Restart</button>
+  </main>
+`);
+
+  const button = gameOverScreen.querySelector("button");
+  button.addEventListener("click", startGame);
+
+  document.body.appendChild(gameOverScreen);
+}
+
+function removeGameOverScreen() {
+  if (gameOverScreen !== undefined) {
+    gameOverScreen.remove();
+  }
+}
+
+// -- Setting the game state - start or game over
+
+function startGame() {
+  removeSplashScreen();
+  removeGameOverScreen();
+
+  createGameScreen();
+
+  game = new Game();
+  game.gameScreen = gameScreen;
+
+  // Start game
+  game.start();
+}
+
+function endGame(score) {
+  removeGameScreen();
+  createGameOverScreen(score);
+}
+
+// Runs the function `createSplashScreen` once all resources are loaded
+window.addEventListener("load", createSplashScreen);

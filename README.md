@@ -144,7 +144,7 @@ class Player extends Creature {
 ### bullet.js
 
 ```
-class Bullet(){
+class Bullet{
   constructor(attack){
     this.canvas;
     this.ctx;
