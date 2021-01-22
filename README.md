@@ -165,30 +165,6 @@ class Bullet(){
 ```
 
 
-## Task - WIP
-
-- Main - buildDom
-- Main - buildSplash
-- Main - addEventListener
-- Main - destroySplash
-- Main - 3 states transitions
-- Game - loop
-- Game - Create Player,rock and wall
-- Main - GameWon
-- Main - destroy Game
-- Main - GameWon RESTART
-- Main - removeGameWon
-- Game - restartGame
-- Game - addEventListener
-- Wall - create
-- Player - create
-- Player - move
-- Player - collision
-- Rock - create
-- Rock - throw (physics)
-- Rock - collision
-- Game - check win
-
 ## Links
 
 ### Trello
@@ -198,7 +174,7 @@ class Bullet(){
 ### Git
 
 URls for the project repo and deploy
-[Link Repo](https://github.com/zebader/Stone-Fight)
+[Link Repo](https://github.com/aleixbadia/DungeonSurvival)
 [Link Deploy]()
 
 ### Slides
