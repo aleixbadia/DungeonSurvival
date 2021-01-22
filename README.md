@@ -169,7 +169,7 @@ class Bullet(){
 
 ### Trello
 
-[Link url](https://trello.com/b/7AltuuZb/stone-fight-kanban)
+[Link url](https://trello.com/b/Hg7qRczL/dungeon-survival)
 
 ### Git
 
