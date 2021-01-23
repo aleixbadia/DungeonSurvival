@@ -5,11 +5,15 @@ class Bullet{
       this.ctx;
       this.x;
       this.y;
-      this.size;
+      this.size = 10;
   
-      this.attack;
+      this.attack = attack;
     }
     
     draw(){
+    }
+
+    updatePosition(){
+
     }
   }

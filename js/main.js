@@ -55,8 +55,8 @@ function createGameScreen() {
   gameScreen = buildDom(`
     <main class="game-container">
       <header>
-        <div class="lives">
-          <span class="label">Lives:</span>
+        <div class="health">
+          <span class="label">Health:</span>
           <span class="value"></span>
         </div>
 
@@ -68,6 +68,10 @@ function createGameScreen() {
 
       <div class="canvas-container">
         <canvas></canvas>
+      </div>
+      <div style="display:none;">
+        <img id="charset" src="./img/charset.png">
+        <img id="monsterSet" src="./img/monsterSet.png">
       </div>
     </main>
 	`);
@@ -116,6 +120,7 @@ function startGame() {
 
   // Start game
   game.start();
+
 }
 
 function endGame(score) {
