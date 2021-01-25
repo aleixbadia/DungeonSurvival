@@ -1,4 +1,6 @@
 "use strict";
+const PLAYER_WIDTH = 50;
+const PLAYER_HEIGHT = 50;
 
 class Game {
   constructor() {
@@ -7,10 +9,12 @@ class Game {
     this.gameScreen = null;
     this.player = null;
     this.monsters = [];
+    this.activeMonsters = [];
     this.bullets = [];
     this.gameIsOver = false;
     this.score = 0;
     this.map = {};
+    this.round = 5;
   }
 
   start() {
@@ -29,41 +33,21 @@ class Game {
     this.canvas.setAttribute("width", this.containerWidth);
     this.canvas.setAttribute("height", this.containerHeight);
 
+    // Play the background music of the game
+    document.getElementById("background-music").play();
+
     this.player = new Player(
       this.canvas,
       100,
       10,
       5,
-      200,
-      0,
+      this.canvas.width / 2 - 25,
+      this.canvas.height / 2 - 25,
       "charset",
       [50, 50],
       [1, 0]
     );
-    let monster1 = new Monster(
-      this.canvas,
-      100,
-      10,
-      1,
-      50,
-      0,
-      "monsterSet",
-      [50, 50 * 1.5],
-      [10, 0]
-    );
-    let monster2 = new Monster(
-      this.canvas,
-      100,
-      10,
-      1,
-      400,
-      0,
-      "monsterSet",
-      [50, 50 * 1.5],
-      [10, 0]
-    );
-    this.monsters.push(monster1);
-    this.monsters.push(monster2);
+    this.createNewRound();
 
     // Add event listener for moving the player
     onkeydown = onkeyup = (e) => {
@@ -78,22 +62,33 @@ class Game {
   startLoop() {
     const loop = function () {
       // 1. UPDATE POSITION OF PLAYER AND SHOOT STATUS
-      // // 1. Create a mesure of time for each loop
+      // // 1. Create a mesure of time for each loop and adds a new monster every 2 seconds
       let now = Date.now();
-      let dt = (now - this.lastTime) / 1000.0;
+      let loopTime = (now - this.lastTime) / 1000.0;
       this.lastTime = now;
+      this.timeAccumulator += loopTime;
+      console.log(this.timeAccumulator)
 
-      // // 2. Check if player had hit any enemy (check all monsters)
+      if (this.timeAccumulator > 2) {
+        console.log("hello")
+        this.activeMonsters.push(this.monsters.pop())
+        this.timeAccumulator = 0;
+      }
+
+      // // 2. Check all collisions between activeMonsters and player / bullets and activeMonsters
       this.checkCollisions();
 
-      // // 3. Update the player and check if player is going off the screen
-      this.player.updatePosition(this.map, dt);
-      this.monsters.forEach((monster) => {
-        monster.updatePosition(this.player, this.monsters);
+      // // 3. Update positions and check if player, activeMonsters or bullets are going off the screen
+      this.player.updatePosition(this.map, loopTime);
+      this.activeMonsters.forEach((monster, indexM) => {
+        monster.updatePosition(this.player, this.activeMonsters);
+        if (monster.outOfScreen()) {
+          this.activeMonsters.splice(indexM, 1);
+        }
       });
       this.bullets.forEach((bullet, indexB) => {
         bullet.updatePosition();
-        if(bullet.outOfScreen()){
+        if (bullet.outOfScreen()) {
           this.bullets.splice(indexB, 1);
         }
       });
@@ -105,8 +100,8 @@ class Game {
       // // Draw the player
       this.player.draw();
 
-      // // Draw the monsters
-      this.monsters.forEach(function (monster) {
+      // // Draw the activeMonsters
+      this.activeMonsters.forEach(function (monster) {
         monster.draw();
       });
 
@@ -139,37 +134,56 @@ class Game {
   }
 
   checkCollisions() {
-    this.monsters.forEach((monster) => {
+    this.activeMonsters.forEach((monster) => {
       // We will implement didCollide() in the next step
       if (this.player.didCollide(monster)) {
         this.player.takeDamage(monster.attack);
-        console.log(this.player.health);
-
+        document.getElementById("damage-sound").play();
         // Move the monster
         monster.x = 0;
         monster.y = 0;
       }
     });
 
-    this.bullets.forEach((bullet, indexB) => {
-      this.monsters.forEach((monster, indexM) => {
+    this.bullets.forEach((bullet) => {
+      this.activeMonsters.forEach((monster) => {
         if (monster.didCollide(bullet)) {
           monster.takeDamage(bullet.attack);
-          this.bullets.splice(indexB, 1);
+          bullet.x = 0 - bullet.size;
+          this.score += 10;
           if (monster.health <= 0) {
-            this.monsters.splice(indexM, 1);
-            this.score += 10;
+            monster.x = 0 - monster.size[0];
           }
         }
       });
     });
 
-    if (this.player.health === 0 || this.monsters.length === 0) {
+    if (this.player.health <= 0) {
       this.gameOver();
+    }
+    if (this.activeMonsters.length === 0 && this.monsters.length === 0) {
+      this.createNewRound();
     }
   }
 
-  createMonsters() {}
+  createNewRound() {
+    for (let i = 0; i < this.round; i++) {
+      let monster = new Monster(
+        this.canvas,
+        10 * this.round,
+        10,
+        1,
+        55 * i,
+        55,
+        "monsterSet",
+        [50, 50 * 1.5],
+        [10, 0]
+      );
+      this.monsters.push(monster);
+    }
+    this.activeMonsters = this.monsters.splice(0, 4);
+    this.round++;
+  }
 
   gameOver() {
     // flag `gameIsOver = true` stops the loop

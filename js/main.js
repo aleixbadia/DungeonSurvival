@@ -73,6 +73,11 @@ function createGameScreen() {
         <img id="charset" src="./img/charset.png">
         <img id="monsterSet" src="./img/monsterSet.png">
         <img id="bullet" src="./img/bullet.png">
+        <audio id="background-music" preload="auto" controls="none" src="./sounds/game.mp3"></audio>
+        <audio id="damage-sound" preload="auto" controls="none" src="./sounds/270338__littlerobotsoundfactory__open-01.wav"></audio>
+        <audio id="shoot-sound" preload="auto" controls="none" src="sounds/270336__littlerobotsoundfactory__shoot-02.wav"></audio>
+        <audio id="gameover-music" preload="auto" controls="none" src="./sounds/GameOver.mp3"></audio>
+        <audio id="gameover-voice" preload="auto" controls="none" src="./sounds/game.mp3"></audio>
       </div>
     </main>
 	`);
@@ -93,9 +98,16 @@ function createGameOverScreen(score) {
     <h1>Game over</h1>
     <p>Your score: <span> ${score} </span></p>
     <button>Restart</button>
+    <div style="display:none;">
+        <audio id="gameover-music" preload="auto" controls="none" src="./sounds/GameOver.mp3"></audio>
+        <audio id="gameover-voice" preload="auto" controls="none" src="./sounds/Game Over Voice.mp3"></audio>
+      </div>
   </main>
 `);
-
+  gameOverScreen.querySelector("#gameover-voice").play();
+  let gameOverMusic = gameOverScreen.querySelector("#gameover-music");
+  gameOverMusic.volume = 0.3;
+  gameOverMusic.play();
   const button = gameOverScreen.querySelector("button");
   button.addEventListener("click", startGame);
 
@@ -121,7 +133,6 @@ function startGame() {
 
   // Start game
   game.start();
-
 }
 
 function endGame(score) {

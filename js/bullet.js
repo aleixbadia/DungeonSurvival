@@ -5,7 +5,7 @@ class Bullet {
     this.ctx = this.canvas.getContext("2d");
     this.x = x;
     this.y = y;
-    this.size = 50;
+    this.size = [50, 50];
     this.image = document.getElementById("bullet");
     this.attack = attack;
     this.direction = direction;
@@ -22,8 +22,8 @@ class Bullet {
       this.image.height,
       this.x,
       this.y,
-      this.size,
-      this.size
+      this.size[0],
+      this.size[1]
     );
   }
 
@@ -58,9 +58,9 @@ class Bullet {
     const screenRight = this.canvas.width;
   
     const bulletTop = this.y;
-    const bulletBottom = this.y + this.size;
+    const bulletBottom = this.y + this.size[1];
     const bulletLeft = this.x;
-    const bulletRight = this.x + this.size;
+    const bulletRight = this.x + this.size[0];
 
     if (bulletBottom > screenBottom || bulletTop < screenTop || bulletRight > screenRight || bulletLeft < screenLeft) {
       return true;

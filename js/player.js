@@ -2,9 +2,31 @@
 
 class Player extends Creature {
   shoot(dt) {
+    let shootSound = document.getElementById("shoot-sound");
+    shootSound.volume = 0.1;
     this.acc += dt;
-    if (this.acc > 0.07) {
-      let newBullet = new Bullet(this.canvas, this.x, this.y, this.attack, this.direction);
+    if (this.moving === true) {
+      if (this.acc > 0.6) {
+        shootSound.play();
+        let newBullet = new Bullet(
+          this.canvas,
+          this.x,
+          this.y,
+          this.attack,
+          this.direction
+        );
+        game.bullets.push(newBullet);
+        this.acc = 0;
+      }
+    } else if (this.acc > 0.3) {
+      shootSound.play();
+      let newBullet = new Bullet(
+        this.canvas,
+        this.x,
+        this.y,
+        this.attack,
+        this.direction
+      );
       game.bullets.push(newBullet);
       this.acc = 0;
     }
@@ -14,42 +36,42 @@ class Player extends Creature {
     if (map["w"] && map["a"]) {
       this.y -= this.speed / 2;
       this.x -= this.speed / 2;
-      this.direction = "wa"
+      this.direction = "wa";
       this.moving = true;
     } else if (map["w"] && map["d"]) {
       this.y -= this.speed / 2;
       this.x += this.speed / 2;
-      this.direction = "wd"
+      this.direction = "wd";
       this.moving = true;
     } else if (map["s"] && map["a"]) {
       this.y += this.speed / 2;
       this.x -= this.speed / 2;
-      this.direction = "sa"
+      this.direction = "sa";
       this.moving = true;
     } else if (map["s"] && map["d"]) {
       this.y += this.speed / 2;
       this.x += this.speed / 2;
-      this.direction = "sd"
+      this.direction = "sd";
       this.moving = true;
     } else {
       if (map["w"]) {
         this.y -= this.speed;
-        this.direction = "w"
+        this.direction = "w";
         this.moving = true;
       }
       if (map["a"]) {
         this.x -= this.speed;
-        this.direction = "a"
+        this.direction = "a";
         this.moving = true;
       }
       if (map["s"]) {
         this.y += this.speed;
-        this.direction = "s"
+        this.direction = "s";
         this.moving = true;
       }
       if (map["d"]) {
         this.x += this.speed;
-        this.direction = "d"
+        this.direction = "d";
         this.moving = true;
       }
     }
@@ -75,4 +97,6 @@ class Player extends Creature {
     if (playerRight > screenRight) this.x = screenRight - this.size[0];
     if (playerLeft < screenLeft) this.x = screenLeft;
   }
+
+  
 }
