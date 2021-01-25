@@ -56,7 +56,7 @@ class Game {
       100,
       10,
       1,
-      100,
+      400,
       0,
       "monsterSet",
       [50, 50 * 1.5],
@@ -65,14 +65,12 @@ class Game {
     this.monsters.push(monster1);
     this.monsters.push(monster2);
 
-    // Add event listener for moving the player - FALTA BLOQUEJAR AMB PARETS
+    // Add event listener for moving the player
     onkeydown = onkeyup = (e) => {
       this.map[e.key] = e.type == "keydown";
     };
 
-    // Any function provided to eventListener is always invoked by the `window` global object
-    // Therefore, we need to bind `this` to the `game` object,
-    // to prevent `this` from referencing the `window` object
+    this.lastTime = 0;
 
     this.startLoop();
   }
@@ -80,18 +78,24 @@ class Game {
   startLoop() {
     const loop = function () {
       // 1. UPDATE POSITION OF PLAYER AND SHOOT STATUS
-      
+      // // 1. Create a mesure of time for each loop
+      let now = Date.now();
+      let dt = (now - this.lastTime) / 1000.0;
+      this.lastTime = now;
 
       // // 2. Check if player had hit any enemy (check all monsters)
       this.checkCollisions();
 
       // // 3. Update the player and check if player is going off the screen
-      this.player.updatePosition(this.map)
+      this.player.updatePosition(this.map, dt);
       this.monsters.forEach((monster) => {
-        monster.updatePosition(this.player);
+        monster.updatePosition(this.player, this.monsters);
       });
-      this.bullets.forEach((bullet) => {
+      this.bullets.forEach((bullet, indexB) => {
         bullet.updatePosition();
+        if(bullet.outOfScreen()){
+          this.bullets.splice(indexB, 1);
+        }
       });
 
       // 2. CLEAR THE CANVAS
@@ -144,25 +148,25 @@ class Game {
         // Move the monster
         monster.x = 0;
         monster.y = 0;
-
-        if (this.player.health === 0) {
-          this.gameOver();
-        }
       }
     });
 
-    this.bullets.forEach((bullet) => {
-      this.monsters.forEach((monster, index) => {
+    this.bullets.forEach((bullet, indexB) => {
+      this.monsters.forEach((monster, indexM) => {
         if (monster.didCollide(bullet)) {
           monster.takeDamage(bullet.attack);
+          this.bullets.splice(indexB, 1);
           if (monster.health <= 0) {
-            this.monsters.splice(index, 1);
+            this.monsters.splice(indexM, 1);
+            this.score += 10;
           }
         }
       });
     });
-    // We have to bind `this`
-    // as array method callbacks `this` value defaults to undefined.
+
+    if (this.player.health === 0 || this.monsters.length === 0) {
+      this.gameOver();
+    }
   }
 
   createMonsters() {}

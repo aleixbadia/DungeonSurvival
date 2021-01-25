@@ -13,27 +13,30 @@ class Creature {
     this.health = health;
     this.attack = attack;
     this.speed = speed;
+    this.acc = 0; //acumulator to regulate bullets per second in the method shoot
+    this.direction = "s" //inidcator of the direction of the creature for sprites and shooting
+    this.moving = false;
   }
 
   didCollide(element) {
-    const playerLeft = this.x;
-    const playerRight = this.x + this.size[0];
-    const playerTop = this.y;
-    const playerBottom = this.y + this.size[1];
+    const creatureLeft = this.x;
+    const creatureRight = this.x + this.size[0];
+    const creatureTop = this.y;
+    const creatureBottom = this.y + this.size[1];
 
     const elementLeft = element.x;
     const elementRight = element.x + element.size[0];
     const elementTop = element.y;
     const elementBottom = element.y + element.size[1];
 
-    // Check if the element sides intersect with any of the player's sides
-    const crossLeft = elementLeft <= playerRight && elementLeft >= playerLeft;
+    // Check if the element sides intersect with any of the creature's sides
+    const crossLeft = elementLeft <= creatureRight && elementLeft >= creatureLeft;
 
-    const crossRight = elementRight >= playerLeft && elementRight <= playerRight;
+    const crossRight = elementRight >= creatureLeft && elementRight <= creatureRight;
 
-    const crossBottom = elementBottom >= playerTop && elementBottom <= playerBottom;
+    const crossBottom = elementBottom >= creatureTop && elementBottom <= creatureBottom;
 
-    const crossTop = elementTop <= playerBottom && elementTop >= playerTop;
+    const crossTop = elementTop <= creatureBottom && elementTop >= creatureTop;
 
     if ((crossLeft || crossRight) && (crossTop || crossBottom)) {
       return true;

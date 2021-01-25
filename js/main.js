@@ -72,6 +72,7 @@ function createGameScreen() {
       <div style="display:none;">
         <img id="charset" src="./img/charset.png">
         <img id="monsterSet" src="./img/monsterSet.png">
+        <img id="bullet" src="./img/bullet.png">
       </div>
     </main>
 	`);
