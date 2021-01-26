@@ -20,7 +20,7 @@ function createSplashScreen() {
   <main class="splashScreen">
       <h1>Dungeon Survival</h1>
       <div class="splashContent">
-        <img src="../img/wizard.png" alt="Wizard">
+        <img src="img/wizard.png" alt="Wizard">
         <div>
           <p>Oh, hello there and welcome to this dungeon! <br>
             In case you don't know already, let me explain you what is all this about.

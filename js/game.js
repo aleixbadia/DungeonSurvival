@@ -15,6 +15,8 @@ class Game {
     this.score = 0;
     this.map = {};
     this.round = 5;
+    this.lastTime = 0;
+    this.timeAccumulator = 0;
   }
 
   start() {
@@ -47,14 +49,14 @@ class Game {
       [50, 50],
       [1, 0]
     );
-    this.createNewRound();
+    // this.createNewRound();
 
     // Add event listener for moving the player
     onkeydown = onkeyup = (e) => {
       this.map[e.key] = e.type == "keydown";
     };
 
-    this.lastTime = 0;
+    
 
     this.startLoop();
   }
@@ -67,11 +69,15 @@ class Game {
       let loopTime = (now - this.lastTime) / 1000.0;
       this.lastTime = now;
       this.timeAccumulator += loopTime;
-      console.log(this.timeAccumulator)
+      if(this.timeAccumulator > 10){
+        this.timeAccumulator = 0;
+      }
 
-      if (this.timeAccumulator > 2) {
-        console.log("hello")
-        this.activeMonsters.push(this.monsters.pop())
+      if (this.timeAccumulator > 2 && this.monsters.length > 0) {
+        console.log(this.activeMonsters)
+        console.log(this.monsters)
+        this.activeMonsters.push(this.monsters.pop());
+        console.log(this.activeMonsters)
         this.timeAccumulator = 0;
       }
 
@@ -138,10 +144,11 @@ class Game {
       // We will implement didCollide() in the next step
       if (this.player.didCollide(monster)) {
         this.player.takeDamage(monster.attack);
+        document.getElementById("damage-sound").currentTime = 0;
         document.getElementById("damage-sound").play();
         // Move the monster
-        monster.x = 0;
-        monster.y = 0;
+        monster.x = this.canvas.width * Math.random() * 0.8;
+        monster.y = this.canvas.height * Math.random() * 0.8;
       }
     });
 
@@ -173,15 +180,15 @@ class Game {
         10 * this.round,
         10,
         1,
-        55 * i,
-        55,
+        this.canvas.width * Math.random() * 0.8,
+        this.canvas.height * Math.random() * 0.8,
         "monsterSet",
         [50, 50 * 1.5],
         [10, 0]
       );
       this.monsters.push(monster);
     }
-    this.activeMonsters = this.monsters.splice(0, 4);
+    this.activeMonsters = this.monsters.splice(0, 1);
     this.round++;
   }
 

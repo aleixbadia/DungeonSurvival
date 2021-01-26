@@ -1,18 +1,57 @@
-<main>
-    <div class="container">
-        <h1>Dungeon Survival</h1>
-        <p>Oh, hello there and welcome to this dungeon! <br>
-            In case you don't know already, let me explain you what is all this about.
-            This is a Dungeon that never ends and you need tosurvive as many rounds
-            as possible inside of it. During each round, new monsters will show up and
-            you will have to defeat them all.
-            
-            Sorry, I forgot to ask, what's your name?</p>
-        <div>
-            <input type="text" >
-            <button>Start</button>
-        </div>
-    </div>
-    <img src="../img/wizard.png" alt="">
-    <audio id="background-music" preload="auto" controls="none" src="./sounds/game.mp3"></audio>
-  </main>
+updatePosition(player, monsters) {
+    let collidedMonster;
+    const monstersClean = monsters.filter((monster) => monster !== this);
+    let collision = false; //with other monsters
+    monstersClean.forEach((monster) => {
+      if (this.didCollide(monster)) {
+        collision = true;
+        collidedMonster = monster;
+      }
+    });
+
+    if (!collision) {
+      if (this.x > player.x && this.y > player.y) {
+        this.x -= this.speed / 2;
+        this.y -= this.speed / 2;
+      } else if (this.x > player.x && this.y < player.y) {
+        this.x -= this.speed / 2;
+        this.y += this.speed / 2;
+      } else if (this.x < player.x && this.y > player.y) {
+        this.x += this.speed / 2;
+        this.y -= this.speed / 2;
+      } else if (this.x < player.x && this.y < player.y) {
+        this.x += this.speed / 2;
+        this.y += this.speed / 2;
+      } else if (this.x > player.x) {
+        this.x -= this.speed;
+      } else if (this.x < player.x) {
+        this.x += this.speed;
+      } else if (this.y > player.y) {
+        this.y -= this.speed;
+      } else if (this.y < player.y) {
+        this.y += this.speed;
+      }
+    } else {
+      if (this.x > collidedMonster.x && this.y > collidedMonster.y) {
+        this.x += this.speed / 2;
+        this.y += this.speed / 2;
+      } else if (this.x > collidedMonster.x && this.y < collidedMonster.y) {
+        this.x += this.speed / 2;
+        this.y -= this.speed / 2;
+      } else if (this.x < collidedMonster.x && this.y > collidedMonster.y) {
+        this.x -= this.speed / 2;
+        this.y += this.speed / 2;
+      } else if (this.x < collidedMonster.x && this.y < collidedMonster.y) {
+        this.x -= this.speed / 2;
+        this.y -= this.speed / 2;
+      } else if (this.x > collidedMonster.x) {
+        this.x += this.speed;
+      } else if (this.x < collidedMonster.x) {
+        this.x -= this.speed;
+      } else if (this.y > collidedMonster.y) {
+        this.y += this.speed;
+      } else if (this.y < collidedMonster.y) {
+        this.y -= this.speed;
+      }
+    }
+  }
