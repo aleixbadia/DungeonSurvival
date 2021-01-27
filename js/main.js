@@ -1,9 +1,13 @@
 "use strict";
 
+let stop = false;
+
 let game; // instance of the Game
 let splashScreen; // Start Game Screen
 let gameScreen;
 let gameOverScreen;
+
+let introductionVoice;
 
 // Creates DOM elements from a string representation
 // buildDom
@@ -34,11 +38,18 @@ function createSplashScreen() {
             <button>Tell the wizard</button>
           </div>
         </div>
-      </div>    
+      </div>
+      <div style="display:none;">
+      <audio id="introduction" preload="auto" controls="none" src="sounds/IntroDungeon.ogg"></audio>
+      </div>  
   </main>
 	`);
 
   document.body.appendChild(splashScreen);
+
+  introductionVoice = document.querySelector("#introduction");
+  introductionVoice.volume = 0.3;
+  introductionVoice.play();
 
   const startButton = splashScreen.querySelector("button");
   startButton.addEventListener("click", startGame);
@@ -73,11 +84,9 @@ function createGameScreen() {
         <img id="charset" src="./img/charset.png">
         <img id="monsterSet" src="./img/monsterSet.png">
         <img id="bullet" src="./img/bullet.png">
-        <audio id="background-music" preload="auto" controls="none" src="./sounds/game.mp3"></audio>
-        <audio id="damage-sound" preload="auto" controls="none" src="./sounds/270338__littlerobotsoundfactory__open-01.wav"></audio>
+        <audio id="background-music" preload="auto" controls="none" src="sounds/game.mp3"></audio>
+        <audio id="damage-sound" preload="auto" controls="none" src="sounds/Damage.ogg"></audio>
         <audio id="shoot-sound" preload="auto" controls="none" src="sounds/270336__littlerobotsoundfactory__shoot-02.wav"></audio>
-        <audio id="gameover-music" preload="auto" controls="none" src="./sounds/GameOver.mp3"></audio>
-        <audio id="gameover-voice" preload="auto" controls="none" src="./sounds/game.mp3"></audio>
       </div>
     </main>
 	`);
@@ -100,11 +109,13 @@ function createGameOverScreen(score) {
     <button>Restart</button>
     <div style="display:none;">
         <audio id="gameover-music" preload="auto" controls="none" src="./sounds/GameOver.mp3"></audio>
-        <audio id="gameover-voice" preload="auto" controls="none" src="./sounds/Game Over Voice.mp3"></audio>
+        <audio id="gameover-voice" preload="auto" controls="none" src="./sounds/GameOverVoice.ogg"></audio>
       </div>
   </main>
 `);
-  gameOverScreen.querySelector("#gameover-voice").play();
+  let gameOverVoice = gameOverScreen.querySelector("#gameover-voice");
+  gameOverVoice.volume = 0.3;
+  gameOverVoice.play();
   let gameOverMusic = gameOverScreen.querySelector("#gameover-music");
   gameOverMusic.volume = 0.3;
   gameOverMusic.play();

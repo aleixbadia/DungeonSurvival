@@ -9,6 +9,9 @@ class Creature {
     this.image = document.getElementById(imageID);
     this.size = size; // this is an array [width,height]
     this.index = index; //this is an array [x,y] to choose creature of the sprite
+    this.indexIteration = 0;
+    this.spriteIteration = 0;
+    this.spriteTimeAcc = 0;
 
     this.health = health;
     this.attack = attack;
@@ -31,15 +34,19 @@ class Creature {
 
     // Check if the element sides intersect with any of the creature's sides
     const crossLeft =
-      elementLeft <= creatureRight && elementLeft >= creatureLeft;
+      creatureLeft <= elementRight && creatureLeft >= elementLeft;
 
     const crossRight =
-      elementRight >= creatureLeft && elementRight <= creatureRight;
+      creatureRight <= elementRight && creatureRight >= elementLeft;
 
     const crossBottom =
-      elementBottom >= creatureTop && elementBottom <= creatureBottom;
+      creatureBottom >= elementTop && creatureBottom <= elementBottom;
 
-    const crossTop = elementTop <= creatureBottom && elementTop >= creatureTop;
+    const crossTop = creatureTop >= elementTop && creatureTop <= elementBottom;
+
+    if (stop) {
+      debugger;
+    }
 
     if ((crossLeft || crossRight) && (crossTop || crossBottom)) {
       return true;
@@ -48,7 +55,8 @@ class Creature {
     }
   }
 
-  draw() {
+  draw(loopTime) {
+    this.spriteTimeAcc += loopTime;
     if (this.moving === false) {
       if (
         this.direction === "w" ||
@@ -112,6 +120,24 @@ class Creature {
         );
       }
     } else {
+      if (this.spriteTimeAcc > 0.1) {
+        this.spriteTimeAcc = 0;
+        if (this.spriteIteration === 0) {
+          this.indexIteration = this.index[0] - 1;
+          this.spriteIteration ++;
+        } else if (this.spriteIteration === 1) {
+          this.indexIteration = this.index[0];
+          this.spriteIteration ++;
+        } else if (this.spriteIteration === 2) {
+          this.indexIteration = this.index[0] + 1;
+          this.spriteIteration ++;
+        } else if (this.spriteIteration === 3) {
+          this.indexIteration = this.index[0];
+          this.spriteIteration = 0;
+        }
+      }
+      // console.log(this.spriteTimeAcc);
+      
       if (
         this.direction === "w" ||
         this.direction === "wa" ||
@@ -120,7 +146,7 @@ class Creature {
         this.ctx.drawImage(
           //ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
           this.image,
-          (this.image.width / 12) * this.index[0],
+          (this.image.width / 12) * this.indexIteration,
           (this.image.height / 8) * (this.index[1] + 3),
           this.image.width / 12,
           this.image.height / 8,
@@ -137,7 +163,7 @@ class Creature {
         this.ctx.drawImage(
           //ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
           this.image,
-          (this.image.width / 12) * this.index[0],
+          (this.image.width / 12) * this.indexIteration,
           (this.image.height / 8) * this.index[1],
           this.image.width / 12,
           this.image.height / 8,
@@ -150,7 +176,7 @@ class Creature {
         this.ctx.drawImage(
           //ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
           this.image,
-          (this.image.width / 12) * this.index[0],
+          (this.image.width / 12) * this.indexIteration,
           (this.image.height / 8) * (this.index[1] + 1),
           this.image.width / 12,
           this.image.height / 8,
@@ -163,7 +189,7 @@ class Creature {
         this.ctx.drawImage(
           //ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
           this.image,
-          (this.image.width / 12) * this.index[0],
+          (this.image.width / 12) * this.indexIteration,
           (this.image.height / 8) * (this.index[1] + 2),
           this.image.width / 12,
           this.image.height / 8,

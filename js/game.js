@@ -56,8 +56,6 @@ class Game {
       this.map[e.key] = e.type == "keydown";
     };
 
-    
-
     this.startLoop();
   }
 
@@ -69,15 +67,12 @@ class Game {
       let loopTime = (now - this.lastTime) / 1000.0;
       this.lastTime = now;
       this.timeAccumulator += loopTime;
-      if(this.timeAccumulator > 10){
+      if (this.timeAccumulator > 10) {
         this.timeAccumulator = 0;
       }
 
       if (this.timeAccumulator > 2 && this.monsters.length > 0) {
-        console.log(this.activeMonsters)
-        console.log(this.monsters)
         this.activeMonsters.push(this.monsters.pop());
-        console.log(this.activeMonsters)
         this.timeAccumulator = 0;
       }
 
@@ -104,16 +99,18 @@ class Game {
 
       // 3. UPDATE THE CANVAS
       // // Draw the player
-      this.player.draw();
+      this.player.draw(loopTime);
+      console.log(this.player.spriteTimeAcc)
+      console.log(this.player.spriteIteration)
 
       // // Draw the activeMonsters
-      this.activeMonsters.forEach(function (monster) {
-        monster.draw();
+      this.activeMonsters.forEach(monster => {
+        monster.draw(loopTime);
       });
 
       // // Draw the bullets
-      this.bullets.forEach(function (bullet) {
-        bullet.draw();
+      this.bullets.forEach(bullet => {
+        bullet.draw(loopTime);
       });
 
       // 4. TERMINATE LOOP IF THE GAME IS OVER
@@ -141,10 +138,9 @@ class Game {
 
   checkCollisions() {
     this.activeMonsters.forEach((monster) => {
-      // We will implement didCollide() in the next step
       if (this.player.didCollide(monster)) {
         this.player.takeDamage(monster.attack);
-        document.getElementById("damage-sound").currentTime = 0;
+        document.getElementById("damage-sound").currentTime = 0.5;
         document.getElementById("damage-sound").play();
         // Move the monster
         monster.x = this.canvas.width * Math.random() * 0.8;
