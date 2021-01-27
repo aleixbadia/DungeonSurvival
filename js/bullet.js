@@ -5,7 +5,7 @@ class Bullet {
     this.ctx = this.canvas.getContext("2d");
     this.x = x;
     this.y = y;
-    this.size = [50, 50];
+    this.size = [70, 70];
     this.image = document.getElementById("bullet");
     this.attack = attack;
     this.direction = direction;
@@ -13,13 +13,14 @@ class Bullet {
   }
 
   draw() {
+    this.image.style.transform = 'rotate(180deg)';
     this.ctx.drawImage(
       //ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
       this.image,
-      0,
-      0,
-      this.image.width,
-      this.image.height,
+      this.image.width*0.1,
+      this.image.height*0.1,
+      this.image.width*0.8,
+      this.image.height*0.8,
       this.x,
       this.y,
       this.size[0],
@@ -63,6 +64,40 @@ class Bullet {
     const bulletRight = this.x + this.size[0];
 
     if (bulletBottom > screenBottom || bulletTop < screenTop || bulletRight > screenRight || bulletLeft < screenLeft) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  didCollide(element) {
+    const creatureLeft = this.x;
+    const creatureRight = this.x + this.size[0];
+    const creatureTop = this.y;
+    const creatureBottom = this.y + this.size[1];
+
+    const elementLeft = element.x;
+    const elementRight = element.x + element.size[0];
+    const elementTop = element.y;
+    const elementBottom = element.y + element.size[1];
+
+    // Check if the element sides intersect with any of the creature's sides
+    const crossLeft =
+      creatureLeft <= elementRight && creatureLeft >= elementLeft;
+
+    const crossRight =
+      creatureRight <= elementRight && creatureRight >= elementLeft;
+
+    const crossBottom =
+      creatureBottom >= elementTop && creatureBottom <= elementBottom;
+
+    const crossTop = creatureTop >= elementTop && creatureTop <= elementBottom;
+
+    if (stop) {
+      debugger;
+    }
+
+    if ((crossLeft || crossRight) && (crossTop || crossBottom)) {
       return true;
     } else {
       return false;

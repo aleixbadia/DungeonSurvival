@@ -3,10 +3,11 @@ const PLAYER_WIDTH = 50;
 const PLAYER_HEIGHT = 50;
 
 class Game {
-  constructor() {
+  constructor(name) {
     this.canvas = null;
     this.ctx = null;
     this.gameScreen = null;
+    this.name = name;
     this.player = null;
     this.monsters = [];
     this.activeMonsters = [];
@@ -21,6 +22,7 @@ class Game {
 
   start() {
     // Create `ctx`, a `player` and start the Canvas loop
+    console.log(this.name);
     let canvasContainer = document.querySelector(".canvas-container");
     this.canvas = this.gameScreen.querySelector("canvas");
     this.ctx = this.canvas.getContext("2d");
@@ -40,13 +42,13 @@ class Game {
 
     this.player = new Player(
       this.canvas,
-      100,
+      10,
       10,
       5,
       this.canvas.width / 2 - 25,
       this.canvas.height / 2 - 25,
       "charset",
-      [50, 50],
+      [70, 70],
       [1, 0]
     );
     // this.createNewRound();
@@ -100,8 +102,6 @@ class Game {
       // 3. UPDATE THE CANVAS
       // // Draw the player
       this.player.draw(loopTime);
-      console.log(this.player.spriteTimeAcc)
-      console.log(this.player.spriteIteration)
 
       // // Draw the activeMonsters
       this.activeMonsters.forEach(monster => {
@@ -150,7 +150,7 @@ class Game {
 
     this.bullets.forEach((bullet) => {
       this.activeMonsters.forEach((monster) => {
-        if (monster.didCollide(bullet)) {
+        if (bullet.didCollide(monster)) {
           monster.takeDamage(bullet.attack);
           bullet.x = 0 - bullet.size;
           this.score += 10;
@@ -179,7 +179,7 @@ class Game {
         this.canvas.width * Math.random() * 0.8,
         this.canvas.height * Math.random() * 0.8,
         "monsterSet",
-        [50, 50 * 1.5],
+        [70, 70 * 1.5],
         [10, 0]
       );
       this.monsters.push(monster);
@@ -194,6 +194,6 @@ class Game {
 
     // Call the `endGame` function from `main` to remove the Game screen
     // and show the Game Over Screen
-    endGame(this.score);
+    endGame(this.score, this.name);
   }
 }
