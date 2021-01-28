@@ -57,7 +57,7 @@ function createSplashScreen2() {
       Sorry, I forgot to ask, what's your name?
     </p>
     <div>
-      <input type="text" id="name">
+      <input type="text" autocomplete="off"  id="name">
       <a id="name-button" href="#" class="btn btn-white btn-animate">TELL THE GUARDIAN</a>
     </div>
     <div style="display:none;">
@@ -103,7 +103,10 @@ function createGameScreen() {
       <div style="display:none;">
         <img id="charset" src="./img/charset.png">
         <img id="monsterSet" src="./img/monsterSet.png">
-        <img id="bullet" src="./img/bullet.png">
+        <img id="bullet-up" src="./img/bullet-up.png">
+        <img id="bullet-down" src="./img/bullet-down.png">
+        <img id="bullet-left" src="./img/bullet-left.png">
+        <img id="bullet-right" src="./img/bullet-right.png">
         <audio id="background-music" preload="auto" controls="none" src="sounds/game.mp3"></audio>
         <audio id="damage-sound" preload="auto" controls="none" src="sounds/Damage.ogg"></audio>
         <audio id="shoot-sound" preload="auto" controls="none" src="sounds/270336__littlerobotsoundfactory__shoot-02.wav"></audio>
@@ -121,14 +124,14 @@ function removeGameScreen() {
 
 // -- game over screen
 
-function createGameOverScreen(score, name) {
+function createGameOverScreen(name, score) {
+  const allScores = JSON.parse(localStorage.getItem("score"));
   gameOverScreen = buildDom(`
   <main class="game-over-screen">
   <img src="img/gameover.png" alt="game-over">
-  <div>
-    <p>Your name: <span> ${name} </span></p>
-    <p>Your score: <span> ${score} </span></p>
-  </div>
+  <span class="label">TOP SCORES</span>
+  <ol id="scores-table"></ol>
+  <span class="label">YOUR NAME ${name} - YOUR SCORE ${score}</span>
   <div>
     <a id="restart-button" href="#" class="btn btn-white btn-animate">RESTART</a>
   </div>
@@ -138,14 +141,41 @@ function createGameOverScreen(score, name) {
   </div>
   </main>
 `);
+
+  //ADD MUSIC AND SOUND EFFECTS
   let gameOverVoice = gameOverScreen.querySelector("#gameover-voice");
   gameOverVoice.volume = 0.3;
   gameOverVoice.play();
   let gameOverMusic = gameOverScreen.querySelector("#gameover-music");
   gameOverMusic.volume = 0.3;
   gameOverMusic.play();
+
+  //ADD EVENT LISTENER
   const button = gameOverScreen.querySelector("#restart-button");
   button.addEventListener("click", startGame);
+
+  //ORDER ALL SCORES, GET SCORE'S LIST AND ADD TOP 5  
+  let sortedArray = allScores.sort(( a, b ) => {
+    if ( a.score < b.score ){
+      return -1;
+    }
+    if ( a.score > b.score ){
+      return 1;
+    }
+    return 0;
+  });
+
+  let scoresTable = gameOverScreen.querySelector("#scores-table");
+
+  if (sortedArray.length>5) {
+    for (let index = sortedArray.length; index > sortedArray.length-5; index--) {
+      const element = sortedArray[index-1];
+      var newItem = document.createElement("li");
+      newItem.innerHTML = `NAME: ${element.name} - SCORE: ${element.score}`;
+      scoresTable.appendChild(newItem);
+    }
+  }
+  
 
   document.body.appendChild(gameOverScreen);
 }
@@ -156,42 +186,32 @@ function removeGameOverScreen() {
   }
 }
 
-// -- Setting the game state - start or game over
+// -- Setting the game state - screen2 , start or game over
 
-function startGame() {
-  let name = splashScreen2.querySelector("#name");
-  removeSplashScreen2();
-  removeGameOverScreen();
-
-  createGameScreen();
-
-  game = new Game(name.value);
-  game.gameScreen = gameScreen;
-
-  // Start game
-  game.start();
-}
-
-function endGame(score, name) {
-  removeGameScreen();
-  createGameOverScreen(score, name);
-}
-
-function screen2 () {
+function screen2() {
   removeSplashScreen1();
   createSplashScreen2();
 }
 
-function getScores() {
-  const scoreStr = localStorage.getItem('score');
-    // Add new score to the array
-  if (!scoreStr) {
-    scoreArr = [];
-  } else if (scoreStr) {
-    scoreArr = JSON.parse(scoreStr);
-  }
+function startGame() {
+  let name = splashScreen2.querySelector("#name");
+  if (name.value !== "") {
+    removeSplashScreen2();
+    removeGameOverScreen();
 
-  return scoreArr;
+    createGameScreen();
+
+    game = new Game(name.value);
+    game.gameScreen = gameScreen;
+
+    // Start game
+    game.start();
+  }
+}
+
+function endGame(name, score) {
+  removeGameScreen();
+  createGameOverScreen(name, score);
 }
 
 // Runs the function `createSplashScreen2` once all resources are loaded

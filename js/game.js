@@ -104,12 +104,12 @@ class Game {
       this.player.draw(loopTime);
 
       // // Draw the activeMonsters
-      this.activeMonsters.forEach(monster => {
+      this.activeMonsters.forEach((monster) => {
         monster.draw(loopTime);
       });
 
       // // Draw the bullets
-      this.bullets.forEach(bullet => {
+      this.bullets.forEach((bullet) => {
         bullet.draw(loopTime);
       });
 
@@ -120,13 +120,7 @@ class Game {
 
       // 5. UPDATE GAME STATUS
       this.updateGameStats();
-    }.bind(this);
-
-    // As loop function will be continuously invoked by
-    // the `window` object- `window.requestAnimationFrame(loop)`
-    // we have to bind the function so that value of `this` is
-    // pointing to the `game` object, like this:
-    // var loop = function(){}.bind(this);
+    }.bind(this); // var loop = function(){}.bind(this);
 
     window.requestAnimationFrame(loop);
   }
@@ -138,8 +132,8 @@ class Game {
         document.getElementById("damage-sound").currentTime = 0.5;
         document.getElementById("damage-sound").play();
         // Move the monster
-        monster.x = (this.canvas.width * Math.random() * 0.7) + 50;
-        monster.y = (this.canvas.height * Math.random() * 0.7) + 50;
+        monster.x = this.canvas.width * Math.random() * 0.7 + 50;
+        monster.y = this.canvas.height * Math.random() * 0.7 + 50;
       }
     });
 
@@ -191,11 +185,11 @@ class Game {
   saveScore(name, score) {
     // Get the string data  from localStorage
     // Convert it to an array
-    const scoreStr = localStorage.getItem('score');
+    const scoreStr = localStorage.getItem("score");
     let scoreArr;
-  
+
     const newScore = { name: name, score: score };
-  
+
     // Add new score to the array
     if (!scoreStr) {
       scoreArr = [];
@@ -204,12 +198,11 @@ class Game {
       scoreArr = JSON.parse(scoreStr);
       scoreArr.push(newScore);
     }
-  
+
     // Stringify the updated score array
-    const updatedScoreStr =  JSON.stringify(scoreArr);
+    const updatedScoreStr = JSON.stringify(scoreArr);
     // Store back the updated array string
-    localStorage.setItem('score', updatedScoreStr);
-  
+    localStorage.setItem("score", updatedScoreStr);
   }
 
   gameOver() {
@@ -220,6 +213,6 @@ class Game {
 
     // Call the `endGame` function from `main` to remove the Game screen
     // and show the Game Over Screen
-    endGame(this.score, this.name);
+    endGame(this.name, this.score);
   }
 }

@@ -6,14 +6,23 @@ class Bullet {
     this.x = x;
     this.y = y;
     this.size = [70, 70];
-    this.image = document.getElementById("bullet");
+    this.image;
     this.attack = attack;
     this.direction = direction;
     this.speed = 7;
   }
 
   draw() {
-    this.image.style.transform = 'rotate(180deg)';
+    if (this.direction === "w" || this.direction === "wa" || this.direction === "wd") {
+      this.image = document.getElementById("bullet-up");
+    } else if (this.direction === "s" || this.direction === "sa" || this.direction === "sd") {
+      this.image = document.getElementById("bullet-down");
+    } else if (this.direction === "a") {
+      this.image = document.getElementById("bullet-left");
+    } else if (this.direction === "d") {
+      this.image = document.getElementById("bullet-right");
+    }
+    this.image;
     this.ctx.drawImage(
       //ctx.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
       this.image,
