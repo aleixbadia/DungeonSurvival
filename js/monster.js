@@ -129,10 +129,9 @@ class Monster extends Creature {
           this.direction = "s";
         }
       }
-    } else if (this.x > collidedMonster.x) {
-      this.x = collidedMonster.x + this.size + 1;
     } else {
-      this.x = collidedMonster.x - this.size - 1;
+      this.x = (this.canvas.width * Math.random() * 0.7) + 50;
+      this.y = (this.canvas.height * Math.random() * 0.7) + 50;
     }
   }
 

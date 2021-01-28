@@ -22,7 +22,7 @@ class Game {
 
   start() {
     // Create `ctx`, a `player` and start the Canvas loop
-    console.log(this.name);
+
     let canvasContainer = document.querySelector(".canvas-container");
     this.canvas = this.gameScreen.querySelector("canvas");
     this.ctx = this.canvas.getContext("2d");
@@ -42,7 +42,7 @@ class Game {
 
     this.player = new Player(
       this.canvas,
-      10,
+      50,
       10,
       5,
       this.canvas.width / 2 - 25,
@@ -131,11 +131,6 @@ class Game {
     window.requestAnimationFrame(loop);
   }
 
-  updateGameStats() {
-    this.healthElement.innerHTML = this.player.health;
-    this.scoreElement.innerHTML = this.score;
-  }
-
   checkCollisions() {
     this.activeMonsters.forEach((monster) => {
       if (this.player.didCollide(monster)) {
@@ -143,8 +138,8 @@ class Game {
         document.getElementById("damage-sound").currentTime = 0.5;
         document.getElementById("damage-sound").play();
         // Move the monster
-        monster.x = this.canvas.width * Math.random() * 0.8;
-        monster.y = this.canvas.height * Math.random() * 0.8;
+        monster.x = (this.canvas.width * Math.random() * 0.7) + 50;
+        monster.y = (this.canvas.height * Math.random() * 0.7) + 50;
       }
     });
 
@@ -188,9 +183,40 @@ class Game {
     this.round++;
   }
 
+  updateGameStats() {
+    this.healthElement.innerHTML = this.player.health;
+    this.scoreElement.innerHTML = this.score;
+  }
+
+  saveScore(name, score) {
+    // Get the string data  from localStorage
+    // Convert it to an array
+    const scoreStr = localStorage.getItem('score');
+    let scoreArr;
+  
+    const newScore = { name: name, score: score };
+  
+    // Add new score to the array
+    if (!scoreStr) {
+      scoreArr = [];
+      scoreArr.push(newScore);
+    } else if (scoreStr) {
+      scoreArr = JSON.parse(scoreStr);
+      scoreArr.push(newScore);
+    }
+  
+    // Stringify the updated score array
+    const updatedScoreStr =  JSON.stringify(scoreArr);
+    // Store back the updated array string
+    localStorage.setItem('score', updatedScoreStr);
+  
+  }
+
   gameOver() {
     // flag `gameIsOver = true` stops the loop
     this.gameIsOver = true;
+
+    this.saveScore(this.name, this.score);
 
     // Call the `endGame` function from `main` to remove the Game screen
     // and show the Game Over Screen

@@ -45,6 +45,10 @@ function removeSplashScreen1() {
 function createSplashScreen2() {
   splashScreen2 = buildDom(`
   <main class="splashScreen2">
+    <img id="wasd-keys" src="img/wasd.png" alt="wasd-keys">
+    <p id="wasd-text">DIRECTIONS</p>
+    <img id="p-key" src="img/p-key.png" alt="p-key">
+    <p id="p-text">SHOOT</p>
     <p>Oh, hello there and welcome to this dungeon! <br> <br>
       In case you don't know already, let me explain you what is all this about.
       This is a Dungeon that never ends and you need to survive as many rounds
@@ -55,7 +59,7 @@ function createSplashScreen2() {
     <div>
       <input type="text" id="name">
       <a id="name-button" href="#" class="btn btn-white btn-animate">TELL THE GUARDIAN</a>
-      </div>
+    </div>
     <div style="display:none;">
       <audio id="introduction" preload="auto" controls="none" src="sounds/IntroDungeon.ogg"></audio>
     </div>  
@@ -176,6 +180,18 @@ function endGame(score, name) {
 function screen2 () {
   removeSplashScreen1();
   createSplashScreen2();
+}
+
+function getScores() {
+  const scoreStr = localStorage.getItem('score');
+    // Add new score to the array
+  if (!scoreStr) {
+    scoreArr = [];
+  } else if (scoreStr) {
+    scoreArr = JSON.parse(scoreStr);
+  }
+
+  return scoreArr;
 }
 
 // Runs the function `createSplashScreen2` once all resources are loaded

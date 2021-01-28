@@ -189,6 +189,34 @@ body {
   margin-right: 2%;
 }
 
+#p-key {
+  height: 100px;
+  position:absolute;
+  left: 5%;
+  top: 20%;
+}
+
+#wasd-keys {
+  height: 200px;
+  position:absolute;
+  left: 2%;
+  top: 40%;
+}
+
+#p-text {
+  width: 15%;
+  position:absolute;
+  left: 17%;
+  top: 18%;
+}
+
+#wasd-text {
+  width: 15%;
+  position:absolute;
+  left: 17%;
+  top: 45%;
+}
+
 /* ---- Game Over ---- */
 
 .game-over-screen {
@@ -196,7 +224,6 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
 }
 
 .game-over-screen img{
